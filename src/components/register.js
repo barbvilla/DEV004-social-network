@@ -38,36 +38,66 @@ export const register = () => {
   root.appendChild(registerDiv);
 
   document.querySelector('#create-account').addEventListener('click', () => {
+    const signUpName = document.getElementById('register-name').value;
     const signUpEmail = document.getElementById('register-email').value;
     const signUpPassword = document.getElementById('register-password').value;
-    
-    if(signUpEmail === ''){
+    const signUpRepeatPssword = document.getElementById('register-password2').value;
+    const signUpPetName = document.getElementById('pet-name').value;
+    const signUpSpecieName = document.getElementById('specie-name').value;
+
+    const capitalLeters = signUpPassword.match(/[A-Z]/g);
+    const lowercase = signUpPassword.match(/[a-z]/g); 
+    const numbers = signUpPassword.match(/[0-9]/g); 
+    const characters = signUpPassword.match(/[\W]/g);
+    const validateEmail =signUpEmail.match(/[\W]/g);
+    console.log(capitalLeters,lowercase,numbers,characters,signUpPassword,signUpRepeatPssword)
+
+    //Nombre
+    if(signUpName === ''){
+      alert("Ingrese su nombre");
+     return false;
+    }
+    //Email
+    else if(signUpEmail === ''){
       alert("Ingrese email");
      return false;
-     }else{
-      //Las validaciones que necesitas hacer
-     }
+    }
 
-    if(signUpPassword === ''){
+    //Contraseña
+    else if(signUpPassword === ''){
       alert("Ingrese contraseña");
      return false;
-     }
+    }
     else if(signUpPassword.length < 8){
       alert("Ingrese 8 digitos");
-      if(signUpPassword.match(/[A-Z]/g===2)){
-        console.log(signUpPassword.match(/[A-Z]/g));
-      }
       return false;
-      
     }
-    
-   
-
-
-    createUser(signUpEmail, signUpPassword)
+    else if(capitalLeters<2 || lowercase<2 || numbers<2|| characters<2){
+      alert("debe incluir como minimos: 2 mayusculas, 2 minusculas, 2 numeros, 2 simbolos")
+      return false;
+    }
+    else if(signUpRepeatPssword === ''){
+      alert("Ingrese la repeticion de la contraseña");
+     return false;
+    }
+    else if(signUpPassword != signUpRepeatPssword){
+      alert("Las contraseñas no son iguales");
+      return false;
+    }
+    else if(signUpPetName === ''){
+      alert("Ingrese nombre de la mascota");
+     return false;
+    }
+    else if(signUpSpecieName === ''){
+      alert("Ingrese la especie de la mascota");
+     return false;
+    }
+    else{
+      createUser(signUpEmail, signUpPassword)
       .then(() => {
         window.location.href = '/';
-      });  
+      }); 
+    }
   });
   const buttonBack = document.getElementById('back-button');
   buttonBack.addEventListener('click', () => {
