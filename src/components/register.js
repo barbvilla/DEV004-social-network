@@ -1,4 +1,4 @@
-import { createUser } from '../lib/firebase';
+import { createUser, savedUser } from '../lib/firebase';
 
 const root = document.getElementById('root');
 export const register = () => {
@@ -44,12 +44,11 @@ export const register = () => {
     const signUpRepeatPssword = document.getElementById('register-password2').value;
     const signUpPetName = document.getElementById('pet-name').value;
     const signUpSpecieName = document.getElementById('specie-name').value;
-
     const capitalLeters = signUpPassword.match(/[A-Z]/g);
     const lowercase = signUpPassword.match(/[a-z]/g); 
     const numbers = signUpPassword.match(/[0-9]/g); 
     const characters = signUpPassword.match(/[\W]/g);
-    const validateEmail =signUpEmail.match(/[\W]/g);
+    const validateEmail = /\S+@\S+/.test(signUpEmail);;
     console.log(capitalLeters,lowercase,numbers,characters,signUpPassword,signUpRepeatPssword)
 
     //Nombre
@@ -61,8 +60,11 @@ export const register = () => {
     else if(signUpEmail === ''){
       alert("Ingrese email");
      return false;
+    } 
+    else if(validateEmail == false){
+      alert("Ingrese email correcto");
+     return false;
     }
-
     //Contraseña
     else if(signUpPassword === ''){
       alert("Ingrese contraseña");
@@ -94,9 +96,11 @@ export const register = () => {
     }
     else{
       createUser(signUpEmail, signUpPassword)
-      .then(() => {
+      .then((usercredentials) => {
+        const user = usercredentials.user;
+        savedUser(signUpName, signUpEmail, signUpPassword, signUpPetName, signUpSpecieName, user.uid);
         window.location.href = '/';
-      }); 
+      });
     }
   });
   const buttonBack = document.getElementById('back-button');
