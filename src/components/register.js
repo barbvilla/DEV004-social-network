@@ -5,8 +5,7 @@ export const register = () => {
   const registerDiv = document.createElement('div');
   registerDiv.classList.add('log');
   registerDiv.innerHTML += `<header>
-  <img src="./img/logo.png" id="logo"></header><section class="register-container">
-  </header>
+  <img src="./img/logo.png" id="logo"></header>
   <section class="register-container">
     <h1>Tú</h1>
     <input type="text"
@@ -38,71 +37,70 @@ export const register = () => {
   root.appendChild(registerDiv);
 
   document.querySelector('#create-account').addEventListener('click', () => {
-    const signUpName = document.getElementById('register-name').value;
+    const displayName = document.getElementById('register-name').value;
     const signUpEmail = document.getElementById('register-email').value;
     const signUpPassword = document.getElementById('register-password').value;
-    const signUpRepeatPssword = document.getElementById('register-password2').value;
-    const signUpPetName = document.getElementById('pet-name').value;
-    const signUpSpecieName = document.getElementById('specie-name').value;
-    const capitalLeters = signUpPassword.match(/[A-Z]/g);
-    const lowercase = signUpPassword.match(/[a-z]/g); 
-    const numbers = signUpPassword.match(/[0-9]/g); 
-    const characters = signUpPassword.match(/[\W]/g);
-    const validateEmail = /\S+@\S+/.test(signUpEmail);;
-    console.log(capitalLeters,lowercase,numbers,characters,signUpPassword,signUpRepeatPssword)
-
-    //Nombre
-    if(signUpName === ''){
-      alert("Ingrese su nombre");
-     return false;
-    }
-    //Email
-    else if(signUpEmail === ''){
-      alert("Ingrese email");
-     return false;
-    } 
-    else if(validateEmail == false){
-      alert("Ingrese email correcto");
-     return false;
-    }
-    //Contraseña
-    else if(signUpPassword === ''){
-      alert("Ingrese contraseña");
-     return false;
-    }
-    else if(signUpPassword.length < 8){
-      alert("Ingrese 8 digitos");
-      return false;
-    }
-    else if(capitalLeters<2 || lowercase<2 || numbers<2|| characters<2){
-      alert("debe incluir como minimos: 2 mayusculas, 2 minusculas, 2 numeros, 2 simbolos")
-      return false;
-    }
-    else if(signUpRepeatPssword === ''){
-      alert("Ingrese la repeticion de la contraseña");
-     return false;
-    }
-    else if(signUpPassword != signUpRepeatPssword){
-      alert("Las contraseñas no son iguales");
-      return false;
-    }
-    else if(signUpPetName === ''){
-      alert("Ingrese nombre de la mascota");
-     return false;
-    }
-    else if(signUpSpecieName === ''){
-      alert("Ingrese la especie de la mascota");
-     return false;
-    }
-    else{
-      createUser(signUpEmail, signUpPassword)
+    const petName = document.getElementById('pet-name').value;
+    const petSpecie = document.getElementById('specie-name').value;
+    createUser(signUpEmail, signUpPassword)
       .then((usercredentials) => {
         const user = usercredentials.user;
-        savedUser(signUpName, signUpEmail, signUpPassword, signUpPetName, signUpSpecieName, user.uid);
-        window.location.href = '/';
+        return savedUser(displayName, signUpEmail, signUpPassword, petName, petSpecie, user.uid);
+      })
+      .then(()=>{
+        window.location.href = '/feed';
+      })
+      // eslint-disable-next-line consistent-return
+      .catch((error) => {
+        const signUpRepeatPssword = document.getElementById('register-password2').value;
+        const capitalLeters = signUpPassword.match(/[A-Z]/g);
+        const lowercase = signUpPassword.match(/[a-z]/g);
+        const numbers = signUpPassword.match(/[0-9]/g);
+        const characters = signUpPassword.match(/[\W]/g);
+        const validateEmail = /\S+@\S+/.test(signUpEmail);
+        const validatePetName = /[0-9]/g.test(petName);
+        const validatePetSpecie = /[0-9]/g.test(petSpecie);
+        if (displayName === '') {
+          alert('Ingrese su nombre');
+          return false;
+        } if (signUpEmail === '') {
+          alert('Ingrese email');
+          return false;
+        } if (validateEmail === false) {
+          alert('Ingrese email correcto');
+          return false;
+        } if (signUpPassword === '') {
+          alert('Ingrese contraseña');
+          return false;
+        } if (signUpPassword.length < 8) {
+          alert('Ingrese 8 digitos');
+          return false;
+        } if (capitalLeters < 2 || lowercase < 2 || numbers < 2 || characters < 2) {
+          alert('debe incluir como minimos: 2 mayusculas, 2 minusculas, 2 numeros, 2 simbolos');
+          return false;
+        } if (signUpRepeatPssword === '') {
+          alert('Ingrese la repeticion de la contraseña');
+          return false;
+        } if (signUpPassword !== signUpRepeatPssword) {
+          alert('Las contraseñas no son iguales');
+          return false;
+        } if (petName === '') {
+          alert('Ingrese nombre de la mascota');
+          return false;
+        } if (validatePetName === true) {
+          alert('Ingrese nombre: solo letras');
+          return false;  
+        } if (petSpecie === '') {
+          alert('Ingrese la especie de la mascota');
+          return false;
+        } if (validatePetSpecie === true) {
+          alert('Ingrese especie: solo letras');
+          return false;  
+        }
+        return error;
       });
-    }
   });
+
   const buttonBack = document.getElementById('back-button');
   buttonBack.addEventListener('click', () => {
     window.location.href = '/';

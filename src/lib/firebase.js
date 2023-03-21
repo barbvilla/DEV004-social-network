@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { initializeApp } from 'firebase/app';
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getFirestore, setDoc, doc } from 'firebase/firestore';
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -8,6 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
+  signOut
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -23,10 +24,11 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-/* export const userDB = getFirestore(); */
 
+// FUNCIÓN REGISTRO
 export const createUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
 
+// FUNCIÓN GUARADR DATOS USUARIO
 export const savedUser = (displayName, email, password, petName, petSpecie, uid) => setDoc(doc(db, 'users', uid), {
   displayName,
   email,
@@ -36,13 +38,26 @@ export const savedUser = (displayName, email, password, petName, petSpecie, uid)
   uid,
 });
 
-export const singIn = (email, password) => {
-  signInWithEmailAndPassword(auth, email, password);
-};
+export const signIn = (email, password) => signInWithEmailAndPassword(auth, email, password);
 
 const provider = new GoogleAuthProvider();
 export const loginWithGoogle = () => signInWithPopup(auth, provider);
 
-export function authStateChangedEvent(cb) {
-  onAuthStateChanged(auth, (user) => cb(user));
-}
+/* guardar post */
+export const post = async (postText) => {
+  const docRef = await addDoc(collection(db, 'userpost'), {
+    text: postText,
+    userEmail: auth.currentUser.email,
+    userId: auth.currentUser.uid,
+    likes: [],
+  });
+  console.log('Document written with ID: ', docRef.id);
+};
+
+/* salir */
+export const logOut = () => signOut(auth);
+
+/* cambiar el status */
+onAuthStateChanged(auth, (user)=>{
+  console.log(user)
+})
