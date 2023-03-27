@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { initializeApp } from 'firebase/app';
 import {
-  collection, addDoc, getFirestore, setDoc, doc, getDocs, query, onSnapshot, orderBy,
+  collection, addDoc, getFirestore, setDoc, doc, getDocs, query, onSnapshot, orderBy, deleteDoc,updateDoc
 } from 'firebase/firestore';
 import {
   getAuth,
@@ -31,10 +31,10 @@ export const db = getFirestore(app);
 // FUNCIÓN REGISTRO
 export const createUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
 
-// Guardar Display Name
 export const updateName = (displayName) => {
   updateProfile(auth.currentUser, { displayName });
 };
+
 // FUNCIÓN GUARADR DATOS USUARIO
 export const savedUser = (displayName, email, password, petName, petSpecie, uid) => setDoc(doc(db, 'users', uid), {
   displayName,
@@ -78,13 +78,13 @@ export const readPosts = () => query(colRef, orderBy('dateCreated', 'desc'));
 export const listenToPosts = (callback) => {
   onSnapshot(readPosts(), (snapshot) => {
     const allPosts = [];
-    snapshot.docs.forEach((docPost) => {
-      allPosts.push({ ...docPost.data(), id: doc.id });
+    snapshot.docs.forEach((doc) => {
+      allPosts.push({ ...doc.data(), id: doc.id });
     });
     callback(allPosts);
   });
 };
-
+/* Añadir post */
 export const read = getDocs(colRef);
 export const addPost = (callback) => {
   onSnapshot(colRef, (snapshot) => {
@@ -96,10 +96,8 @@ export const addPost = (callback) => {
   });
 };
 
-/* onSnapshot(colRef, (snapshot) => {
-  snapshot.docs.forEach((doc) => {
-    const post = { ...doc.data(), id: doc.id };
-    const postElement = createPostElement(post);
-    postsContainer.appendChild(postElement);
-  });
-}); */
+export const updatePost = (id, newPost) => updateDoc(doc(db, 'userpost', id), newPost);
+
+export const deleteDocData = async (id) => {
+  await deleteDoc(doc(db, 'userpost', id));
+};

@@ -1,6 +1,6 @@
 /* import { signOut } from 'firebase/auth'; */
 import {
-  post, auth, logOut, read, addPost, listenToPosts
+  post, auth, logOut, addPost, deleteDocData, updatePost
 } from '../lib/firebase';
 
 const root = document.getElementById('root');
@@ -23,10 +23,8 @@ export const feed = () => {
     <div class='post-button-container'>
       <button class='post'>Publicar</button>
     </div>
-    <section id='posts-container'>  
-
+    <section id='posts-container'>
     </section>
-      
     `;
   root.appendChild(feedDiv);
 
@@ -51,33 +49,92 @@ export const feed = () => {
       return false;
     }
     await post(postText);
+    statusDescription.value = '';
   });
 
-
+  /*   Mostrar post en timeline */
   const postsContainer = document.getElementById('posts-container');
 
   addPost((posts) => {
-    postsContainer.innerHTML=``;
+    postsContainer.innerHTML='';
     posts.forEach((feedPosts) => {
-      const postElement = document.createElement('div');
+      const postElement = document.createElement('section');
       postElement.classList.add('eachPost');
+      postsContainer.appendChild(postElement);
 
       const userNameElement = document.createElement('p1');
       userNameElement.textContent = feedPosts.userName;
+      postElement.appendChild(userNameElement);
       
       const textElement = document.createElement('p3');
       textElement.textContent = feedPosts.text;
+      postElement.appendChild(textElement);
       
       const likeButton = document.createElement('img');
       likeButton.classList.add('like');
       likeButton.addEventListener('click', () => {
         console.log(feedPosts.likes+"like");
       });
-      
-      postElement.appendChild(userNameElement);
-      postElement.appendChild(textElement);
       postElement.appendChild(likeButton);
-      postsContainer.appendChild(postElement);
+            
+      if (feedPosts.userId === auth.currentUser.uid) {
+        // Borrar Post
+        const deleteButton = document.createElement('img');
+        deleteButton.classList.add('delete-btn');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.value = feedPosts.id;
+        deleteButton.addEventListener('click', () => {
+          const shouldDelete = window.confirm('¿Estás seguro de que deseas eliminar este post?');
+          if (shouldDelete) {
+            deleteDocData(feedPosts.id);
+          }
+        });
+        postElement.appendChild(deleteButton);
+
+        //editar post
+        const updateButton = document.createElement('img');
+        updateButton.classList.add('update-btn');
+        updateButton.value = feedPosts.id;
+        postElement.appendChild(updateButton);
+
+        const editSection = document.createElement('section');
+        editSection.classList.add('edit.section');
+        editSection.style.display = 'none';
+        postElement.appendChild(editSection);
+
+        const updateInput = document.createElement('input');
+        updateInput.classList.add('update-input');
+        updateInput.id = feedPosts.id;
+        updateInput.textContent = feedPosts.text;
+        editSection.appendChild(updateInput);
+
+        const saveButton = document.createElement('button');
+        saveButton.classList.add('save-btn');
+        saveButton.textContent = 'Guardar';
+        editSection.appendChild(saveButton);
+
+        const cancelButton = document.createElement('button');
+        cancelButton.classList.add('cancel-btn');
+        cancelButton.textContent = 'Cancelar';
+        editSection.appendChild(cancelButton);
+
+        updateButton.addEventListener('click', () => {
+          editSection.style.display = 'block';
+        });
+        saveButton.addEventListener('click', () => {
+          const newPostText = document.getElementById(feedPosts.id);
+          const refPostId = feedPosts.id;
+          console.log(refPostId);
+          updatePost(refPostId, { text: newPostText.value })
+            .then(() => {
+              editSection.style.display = 'none';
+            });
+        });
+        cancelButton.addEventListener('click', () => {
+          editSection.style.display = 'none';
+        });
+        postElement.appendChild(editSection);
+      }
     });
   });
   return feedDiv;
