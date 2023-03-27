@@ -23,7 +23,6 @@ button {
   border-radius: 10px;
   margin: 1%;
   text-align: center;
-  margin-left: 65px;
 }
 
 button {
@@ -290,3 +289,9 @@ p3 {
   margin-left: 10px;
 }
 
+.update-input{
+  width: 90%;
+  margin: 18px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}

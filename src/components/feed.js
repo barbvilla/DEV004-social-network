@@ -98,7 +98,7 @@ export const feed = () => {
         postElement.appendChild(updateButton);
 
         const editSection = document.createElement('section');
-        editSection.classList.add('edit.section');
+        editSection.classList.add('edit-section');
         editSection.style.display = 'none';
         postElement.appendChild(editSection);
 
