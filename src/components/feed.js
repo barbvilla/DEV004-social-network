@@ -57,27 +57,27 @@ export const feed = () => {
   const postsContainer = document.getElementById('posts-container');
 
   addPost((posts) => {
+    postsContainer.innerHTML=``;
     posts.forEach((feedPosts) => {
       const postElement = document.createElement('div');
       postElement.classList.add('eachPost');
 
       const userNameElement = document.createElement('p1');
       userNameElement.textContent = feedPosts.userName;
-      postElement.appendChild(userNameElement);
-      userNameElement.innerHTML += `<br>`;
-
+      
       const textElement = document.createElement('p3');
       textElement.textContent = feedPosts.text;
-      textElement.innerHTML += `
-      <header id='head-feed'>
-      <img src="./img/like.png" id="like">
-      </header>`;
+      
+      const likeButton = document.createElement('img');
+      likeButton.classList.add('like');
+      likeButton.addEventListener('click', () => {
+        console.log(feedPosts.likes+"like");
+      });
+      
+      postElement.appendChild(userNameElement);
       postElement.appendChild(textElement);
+      postElement.appendChild(likeButton);
       postsContainer.appendChild(postElement);
-    });
-    const logOutLike = document.getElementById('like');
-      logOutLike.addEventListener('click', () => {
-        console.log('like');
     });
   });
   return feedDiv;
