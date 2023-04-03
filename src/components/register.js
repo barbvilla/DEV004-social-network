@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import { createUser, savedUser, updateName } from '../lib/firebase';
+import { creatUser, savedUser, updateName } from '../lib/firebase';
 
 const root = document.getElementById('root');
 export const register = () => {
@@ -32,11 +32,10 @@ export const register = () => {
     if (!formOK) {
       return;
     }
-    createUser(signUpEmail, signUpPassword)
+    creatUser(signUpEmail, signUpPassword)
       .then((usercredentials) => {
         const user = usercredentials.user;
         updateName(displayName);
-        console.log(user);
         return savedUser(displayName, signUpEmail, signUpPassword, petName, petSpecie, user.uid);
       })
       .then(() => {

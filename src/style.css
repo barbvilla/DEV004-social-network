@@ -28,7 +28,6 @@ button {
   background-color: rgba(131, 89, 227, 1);
   width: 250px;
   height: 43px;
-  background: #8359E3;
   box-shadow: 0px 30px 30px rgba(69, 42, 124, 0.15);
   border-radius: 30px;
   color: white;
@@ -61,9 +60,6 @@ button {
   color: rgb(73, 72, 72);
   padding: 10px 2px 10px 5%;
   font-family: Arial, Helvetica, sans-serif;
-  /* width: 15em; */
-  /* background-position: 58vw */
-  ;
 }
 
 /* Botón registrarse */
@@ -146,9 +142,6 @@ a {
   cursor: pointer;
 }
 
-/* .feed-container{
-  ds
-} */
 .timeline {
   display: flex;
   align-items: left;
@@ -165,7 +158,6 @@ a {
   transform: translate(-50%, -50%);
   border-radius: 10px;
   overflow: auto;
-  /* box-shadow: 0px 30px 30px rgba(92, 92, 92, 0.479); */
 }
 
 #status-description {
@@ -192,7 +184,6 @@ a {
   background-color: rgba(131, 89, 227, 1);
   width: 100px;
   height: 35px;
-  background: #8359E3;
   box-shadow: 0px 10px 10px rgba(69, 42, 124, 0.15);
   border-radius: 30px;
   display: flex;
@@ -211,7 +202,6 @@ a {
   align-items: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   position: absolute;
   top: 30%;
   left: 50%;
@@ -219,7 +209,6 @@ a {
   margin: 0px;
   padding-top: 7px
 }
-
 
 .eachPost {
   background-color: white;
@@ -230,22 +219,28 @@ a {
   margin: 10px 0 10px 0;
 }
 
-p1 {
+.p1 {
+  font-family: 'Baloo Tammudu 2', cursive;
+  text-align: justify;
   font-size: 14px;
   margin-left: 30px;
   display: block;
-  margin-top: 5px;
+  margin-top: 0px;
   margin-right: 0px;
 }
 
-p2{
-  width: 10px;
-  height: 5px;
+.p2 {
+  font-family: 'Baloo Tammudu 2', cursive;
+  font-size: 11px;
+  display: contents;
 }
 
-p3 {
+.p3 {
+  font-family: 'Baloo Tammudu 2', cursive;
+  text-align: justify;
   font-size: 12px;
   margin-left: 30px;
+  margin-top: 0px;
   display: block;
 }
 
@@ -267,10 +262,6 @@ p3 {
   cursor: pointer;
 }
 
-.counter-input{
-  margin-left: 10px;
-  font-size: 12px;
-}
 
 .update-btn{
   background: url(./img/editar.png);

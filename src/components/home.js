@@ -1,5 +1,5 @@
 import {
-  createUser,
+  creatUser,
   loginWithGoogle,
   signIn,
 } from '../lib/firebase';
@@ -58,7 +58,7 @@ export const home = () => {
     loginWithGoogle().then((result) => {
       const user = result.user;
       localStorage.setItem('user', JSON.stringify(user));
-      createUser(user, user.displayName);
+      creatUser(user, user.displayName);
       window.location.href = '/feed';
     });
   });

@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import {
-  collection, addDoc, getFirestore, setDoc, doc, getDocs, query, onSnapshot, orderBy, Timestamp, deleteDoc, updateDoc, arrayUnion, arrayRemove
+  collection, addDoc, getFirestore, setDoc, doc, getDocs, query, onSnapshot,
+  orderBy, Timestamp, deleteDoc, updateDoc, arrayUnion, arrayRemove,
 } from 'firebase/firestore';
 import {
   getAuth,
@@ -12,7 +13,6 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth';
-import { async } from 'regenerator-runtime';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA3k7Vss44vD0x4ynHhUD288WTXc6WTIIc',
@@ -28,14 +28,14 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// FUNCIÓN REGISTRO
-export const createUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
+/* Funcion registro */
+export const creatUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
 
-// Guardar Display Name
+/* Guardar display name */
 export const updateName = (displayName) => {
   updateProfile(auth.currentUser, { displayName });
 };
-// FUNCIÓN GUARADR DATOS USUARIO
+/* Funcion guardar datos de los usuarios */
 export const savedUser = (displayName, email, password, petName, petSpecie, uid) => setDoc(doc(db, 'users', uid), {
   displayName,
   email,
@@ -69,7 +69,7 @@ export const post = async (postText) => {
     dateCreate: Timestamp.now(),
     likes: [],
   });
-  console.log('Document written with ID: ', docRef.id);
+  return docRef;
 };
 
 /* capturar post */
@@ -104,7 +104,7 @@ export const deleteDocData = async (id) => {
 };
 
 /* Guardar like */
-export const like = async (id, uid) => updateDoc(doc(db, 'userpost', id),{likes: arrayUnion(uid),});
+export const like = async (id, uid) => updateDoc(doc(db, 'userpost', id), { likes: arrayUnion(uid) });
 
 /* Quitar like */
-export const disLike = async (id, uid) => updateDoc(doc(db, 'userpost', id),{likes: arrayRemove(uid),})
+export const disLike = async (id, uid) => updateDoc(doc(db, 'userpost', id), { likes: arrayRemove(uid) });

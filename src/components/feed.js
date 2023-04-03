@@ -1,6 +1,5 @@
-import { async } from 'regenerator-runtime';
 import {
-  post, auth, logOut, addPost, deleteDocData, updatePost, like, disLike
+  post, auth, logOut, addPost, deleteDocData, updatePost, like, disLike,
 } from '../lib/firebase';
 
 const root = document.getElementById('root');
@@ -33,7 +32,6 @@ export const feed = () => {
   logOutButton.addEventListener('click', () => {
     logOut(auth).then(() => {
       window.location.href = '/';
-      console.log('the user is signed out');
     });
   });
 
@@ -50,6 +48,7 @@ export const feed = () => {
     }
     await post(postText);
     statusDescription.value = '';
+    return postText;
   });
 
   /* Mostrar post en timeline */
@@ -62,11 +61,13 @@ export const feed = () => {
       postElement.classList.add('eachPost');
       postsContainer.appendChild(postElement);
 
-      const userNameElement = document.createElement('p1');
+      const userNameElement = document.createElement('p');
+      userNameElement.classList.add('p1');
       userNameElement.textContent = feedPosts.userName;
       postElement.appendChild(userNameElement);
 
-      const textElement = document.createElement('p3');
+      const textElement = document.createElement('p');
+      textElement.classList.add('p3');
       textElement.textContent = feedPosts.text;
       postElement.appendChild(textElement);
 
@@ -75,35 +76,30 @@ export const feed = () => {
       likeButton.classList.add('like');
       const disLikeButton = document.createElement('img');
       disLikeButton.classList.add('disLike');
-      //disLikeButton.style.display = 'none';
-      if(feedPosts.likes.includes(auth.currentUser.uid)){
+      if (feedPosts.likes.includes(auth.currentUser.uid)) {
         postElement.appendChild(likeButton);
-      }else{
+      } else {
         postElement.appendChild(disLikeButton);
       }
-      likeButton.addEventListener('click', async() => {
-        if(likeButton.classList.toggle('disLike')){
-          disLike(feedPosts.id,auth.currentUser.uid );
+      likeButton.addEventListener('click', async () => {
+        if (likeButton.classList.toggle('disLike')) {
+          disLike(feedPosts.id, auth.currentUser.uid);
         }
       });
-      disLikeButton.addEventListener('click', async() => {
-        if(disLikeButton.classList.toggle('like')){
-          like(feedPosts.id,auth.currentUser.uid );
+      disLikeButton.addEventListener('click', async () => {
+        if (disLikeButton.classList.toggle('like')) {
+          like(feedPosts.id, auth.currentUser.uid);
         }
       });
-     
-     
-      
-      
-      /*Contador de like y dislike */
-      const counterLike = document.createElement('p2');
-      counterLike.classList.add('counter-input')
+
+      /* Contador de like y dislike */
+      const counterLike = document.createElement('p');
+      counterLike.classList.add('p2');
       counterLike.textContent = feedPosts.likes.length;
       postElement.appendChild(counterLike);
 
       /* erificar si es nuestro usuario ingresado es igual al del post */
       if (feedPosts.userId === auth.currentUser.uid) {
-
         /* Borrar Post */
         const deleteButton = document.createElement('img');
         deleteButton.classList.add('delete-btn');
@@ -143,14 +139,12 @@ export const feed = () => {
         cancelButton.classList.add('cancel-btn');
         cancelButton.textContent = 'Cancelar';
         editSection.appendChild(cancelButton);
-
         updateButton.addEventListener('click', () => {
           editSection.style.display = 'block';
         });
         saveButton.addEventListener('click', () => {
           const newPostText = document.getElementById(feedPosts.id);
           const refPostId = feedPosts.id;
-          console.log(refPostId);
           updatePost(refPostId, { text: newPostText.value })
             .then(() => {
               editSection.style.display = 'none';
@@ -165,4 +159,3 @@ export const feed = () => {
   });
   return feedDiv;
 };
-
