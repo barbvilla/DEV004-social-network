@@ -1,7 +1,6 @@
-/* eslint-disable max-len */
 import { initializeApp } from 'firebase/app';
 import {
-  collection, addDoc, getFirestore, setDoc, doc, getDocs, query, onSnapshot, orderBy, deleteDoc,updateDoc
+  collection, addDoc, getFirestore, setDoc, doc, getDocs, query, onSnapshot, orderBy, Timestamp, deleteDoc, updateDoc, arrayUnion, arrayRemove
 } from 'firebase/firestore';
 import {
   getAuth,
@@ -13,6 +12,7 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth';
+import { async } from 'regenerator-runtime';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA3k7Vss44vD0x4ynHhUD288WTXc6WTIIc',
@@ -31,10 +31,10 @@ export const db = getFirestore(app);
 // FUNCIÓN REGISTRO
 export const createUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
 
+// Guardar Display Name
 export const updateName = (displayName) => {
   updateProfile(auth.currentUser, { displayName });
 };
-
 // FUNCIÓN GUARADR DATOS USUARIO
 export const savedUser = (displayName, email, password, petName, petSpecie, uid) => setDoc(doc(db, 'users', uid), {
   displayName,
@@ -54,9 +54,7 @@ export const loginWithGoogle = () => signInWithPopup(auth, provider);
 export const logOut = () => signOut(auth);
 
 /* cambiar el status */
-onAuthStateChanged(auth, (user) => {
-  console.log(user);
-});
+onAuthStateChanged(auth, (user) => user);
 
 /* leer posts */
 export const colRef = collection(db, 'userpost');
@@ -68,23 +66,24 @@ export const post = async (postText) => {
     userEmail: auth.currentUser.email,
     userId: auth.currentUser.uid,
     userName: auth.currentUser.displayName,
+    dateCreate: Timestamp.now(),
     likes: [],
   });
   console.log('Document written with ID: ', docRef.id);
 };
 
 /* capturar post */
-export const readPosts = () => query(colRef, orderBy('dateCreated', 'desc'));
+export const readPosts = () => query(colRef, orderBy('dateCreate', 'desc'));
 export const listenToPosts = (callback) => {
   onSnapshot(readPosts(), (snapshot) => {
     const allPosts = [];
-    snapshot.docs.forEach((doc) => {
-      allPosts.push({ ...doc.data(), id: doc.id });
+    snapshot.docs.forEach((docPost) => {
+      allPosts.push({ ...docPost.data(), id: doc.id });
     });
     callback(allPosts);
   });
 };
-/* Añadir post */
+
 export const read = getDocs(colRef);
 export const addPost = (callback) => {
   onSnapshot(colRef, (snapshot) => {
@@ -96,8 +95,16 @@ export const addPost = (callback) => {
   });
 };
 
+/* Editar Post */
 export const updatePost = (id, newPost) => updateDoc(doc(db, 'userpost', id), newPost);
 
+/* Eliminar Post */
 export const deleteDocData = async (id) => {
   await deleteDoc(doc(db, 'userpost', id));
 };
+
+/* Guardar like */
+export const like = async (id, uid) => updateDoc(doc(db, 'userpost', id),{likes: arrayUnion(uid),});
+
+/* Quitar like */
+export const disLike = async (id, uid) => updateDoc(doc(db, 'userpost', id),{likes: arrayRemove(uid),})

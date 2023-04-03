@@ -28,10 +28,7 @@ export const home = () => {
   submitButton.addEventListener('click', () => {
     const signInEmail = document.getElementById('email').value;
     const signInPassword = document.getElementById('password').value;
-    const formOK = validateDataHome();
-    if (!formOK) {
-      return;
-    }
+    const validateEmail = /\S+@\S+/.test(signInEmail);
     signIn(signInEmail, signInPassword)
       .then((usercredentials) => {
         const user = usercredentials.user;
@@ -39,26 +36,22 @@ export const home = () => {
         window.location.href = '/feed';
       })
       .catch((error) => {
-        
+        if (signInEmail === '') {
+          // eslint-disable-next-line no-alert
+          alert('Ingrese su email');
+          return false;
+        } if (signInPassword === '') {
+          // eslint-disable-next-line no-alert
+          alert('Ingrese su contraseña');
+          return false;
+        } if (validateEmail === false) {
+          // eslint-disable-next-line no-alert
+          alert('Ingrese email correcto');
+          return false;
+        }
         return error;
       });
   });
-
-  function validateDataHome(){
-    const signInEmail = document.getElementById('email').value;
-    const signInPassword = document.getElementById('password').value;
-    const validateEmail = /\S+@\S+/.test(signInEmail);
-    if (signInEmail === '') {
-      alert('Ingrese su email');
-      return false;
-    } if (signInPassword === '') {
-      alert('Ingrese su contraseña');
-      return false;
-    } if (validateEmail === false) {
-      alert('Ingrese email correcto');
-      return false;
-    }
-  }
 
   const submitGoogle = document.getElementById('google');
   submitGoogle.addEventListener('click', () => {
@@ -67,16 +60,7 @@ export const home = () => {
       localStorage.setItem('user', JSON.stringify(user));
       createUser(user, user.displayName);
       window.location.href = '/feed';
-    }); /* .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      }); */
+    });
   });
   return singInDiv;
 };

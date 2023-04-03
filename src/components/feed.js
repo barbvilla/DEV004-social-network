@@ -1,6 +1,6 @@
-/* import { signOut } from 'firebase/auth'; */
+import { async } from 'regenerator-runtime';
 import {
-  post, auth, logOut, addPost, deleteDocData, updatePost
+  post, auth, logOut, addPost, deleteDocData, updatePost, like, disLike
 } from '../lib/firebase';
 
 const root = document.getElementById('root');
@@ -28,7 +28,7 @@ export const feed = () => {
     `;
   root.appendChild(feedDiv);
 
-  /*   Botón para salir */
+  /* Botón para salir */
   const logOutButton = document.getElementById('salir');
   logOutButton.addEventListener('click', () => {
     logOut(auth).then(() => {
@@ -37,7 +37,7 @@ export const feed = () => {
     });
   });
 
-  /*  Crear post */
+  /* Crear post */
   const postButton = feedDiv.querySelector('.post');
 
   postButton.addEventListener('click', async () => {
@@ -52,11 +52,11 @@ export const feed = () => {
     statusDescription.value = '';
   });
 
-  /*   Mostrar post en timeline */
+  /* Mostrar post en timeline */
   const postsContainer = document.getElementById('posts-container');
 
   addPost((posts) => {
-    postsContainer.innerHTML='';
+    postsContainer.innerHTML = '';
     posts.forEach((feedPosts) => {
       const postElement = document.createElement('section');
       postElement.classList.add('eachPost');
@@ -65,20 +65,46 @@ export const feed = () => {
       const userNameElement = document.createElement('p1');
       userNameElement.textContent = feedPosts.userName;
       postElement.appendChild(userNameElement);
-      
+
       const textElement = document.createElement('p3');
       textElement.textContent = feedPosts.text;
       postElement.appendChild(textElement);
-      
+
+      /* Like y DisLike */
       const likeButton = document.createElement('img');
       likeButton.classList.add('like');
-      likeButton.addEventListener('click', () => {
-        console.log(feedPosts.likes+"like");
+      const disLikeButton = document.createElement('img');
+      disLikeButton.classList.add('disLike');
+      //disLikeButton.style.display = 'none';
+      if(feedPosts.likes.includes(auth.currentUser.uid)){
+        postElement.appendChild(likeButton);
+      }else{
+        postElement.appendChild(disLikeButton);
+      }
+      likeButton.addEventListener('click', async() => {
+        if(likeButton.classList.toggle('disLike')){
+          disLike(feedPosts.id,auth.currentUser.uid );
+        }
       });
-      postElement.appendChild(likeButton);
-            
+      disLikeButton.addEventListener('click', async() => {
+        if(disLikeButton.classList.toggle('like')){
+          like(feedPosts.id,auth.currentUser.uid );
+        }
+      });
+     
+     
+      
+      
+      /*Contador de like y dislike */
+      const counterLike = document.createElement('p2');
+      counterLike.classList.add('counter-input')
+      counterLike.textContent = feedPosts.likes.length;
+      postElement.appendChild(counterLike);
+
+      /* erificar si es nuestro usuario ingresado es igual al del post */
       if (feedPosts.userId === auth.currentUser.uid) {
-        // Borrar Post
+
+        /* Borrar Post */
         const deleteButton = document.createElement('img');
         deleteButton.classList.add('delete-btn');
         deleteButton.textContent = 'Eliminar';
@@ -91,7 +117,7 @@ export const feed = () => {
         });
         postElement.appendChild(deleteButton);
 
-        //editar post
+        /* Editar post */
         const updateButton = document.createElement('img');
         updateButton.classList.add('update-btn');
         updateButton.value = feedPosts.id;
