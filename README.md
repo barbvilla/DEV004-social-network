@@ -71,8 +71,8 @@ Decidimos realizar un diseño simple y limpio, usando una paleta de solo blanco 
 ![Page 2](https://user-images.githubusercontent.com/122575839/231552277-c603935d-13ff-4a67-a613-8f669be76398.png)
 ![Page 3](https://user-images.githubusercontent.com/122575839/231552298-268e6aa6-e98d-4549-bcd3-267dab45b114.png)
 
-
 ## 7. Test
+![imagen](https://user-images.githubusercontent.com/89232779/231842943-c7aba18f-b97d-45d2-8aa3-d1a1d8c1786f.png)
 
 ## 8. Producto final
 
